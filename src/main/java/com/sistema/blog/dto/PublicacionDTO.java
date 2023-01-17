@@ -1,11 +1,16 @@
 package com.sistema.blog.dto;
 
+import com.sistema.blog.entidades.Comentario;
+
+import java.util.Set;
+
 public class PublicacionDTO {
 
     private Long id;
     private String titulo;
     private String descripcion;
     private String contenido;
+    private Set<Comentario> comentarios;
 
     public PublicacionDTO() {
     }
@@ -40,5 +45,13 @@ public class PublicacionDTO {
 
     public void setContenido(String contenido) {
         this.contenido = contenido;
+    }
+
+    public Set<Comentario> getComentarios() {
+        return comentarios;
+    }
+
+    public void setComentarios(Set<Comentario> comentarios) {
+        this.comentarios = comentarios;
     }
 }
