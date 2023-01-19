@@ -1,11 +1,13 @@
 package com.sistema.blog.controlador;
 
+import com.sistema.blog.dto.JWTAuthResponseDTO;
 import com.sistema.blog.dto.LoginDTO;
 import com.sistema.blog.dto.RegistroDTO;
 import com.sistema.blog.entidades.Rol;
 import com.sistema.blog.entidades.Usuario;
 import com.sistema.blog.repositorio.RolRepositorio;
 import com.sistema.blog.repositorio.UsuarioRespositorio;
+import com.sistema.blog.seguridad.JwtTokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -37,12 +39,20 @@ public class AuthControlador {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private JwtTokenProvider jwtTokenProvider;
+
     @PostMapping("/iniciarSesion")
-    public ResponseEntity<String> authenticateUser(@RequestBody LoginDTO loginDTO){
+    public ResponseEntity<JWTAuthResponseDTO> authenticateUser(@RequestBody LoginDTO loginDTO){
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginDTO.getUsernameOrEmail(), loginDTO.getPassword()));
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        return new ResponseEntity<>("Ha iniciado sesion con exito !!", HttpStatus.OK );
+
+        //Obtenemos el token del jwtTokenProvider
+        String token = jwtTokenProvider.generarToken(authentication);
+
+
+        return ResponseEntity.ok(new JWTAuthResponseDTO(token));
     }
 
     @PostMapping("/registrar")
